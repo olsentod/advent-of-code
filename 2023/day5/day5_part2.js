@@ -1,23 +1,18 @@
 const { FileToArray } = require("../../utils/utils");
 
-const [_, __, start, end] = process.argv;
-console.log('start, end', start, end)
-
 const GetSeedLocationInverted = (checks, value) => {
-    let seed = value;
     for (const check of checks) {
-        const [sourceString, destinationString, rangeString] = check;
-        const destination = Number(destinationString);
-        const source = Number(sourceString);
-        const range = Number(rangeString);
+        const [source, destination, range] = check;
+        console.log(check, value)
 
-        const diff = destination - source;
-        if (value >= source && value < source + range) {
+        const diff = source - destination;
+        if (value >= destination && value < destination + range) {
+            console.log('change', diff);
             return value + diff;
         }
     }
 
-    return seed;
+    return value;
 }
 
 const main = async () => {
@@ -63,7 +58,7 @@ const main = async () => {
         }
 
         if (mappingKey) {
-            initialMap.set(mappingKey, [...initialMap.get(mappingKey), line.split(' ')]);
+            initialMap.set(mappingKey, [...initialMap.get(mappingKey), line.split(' ').map((n) => Number(n))]);
         }
 
         if (line.includes('seed-to-soil map:')) {
@@ -99,30 +94,37 @@ const main = async () => {
         }
     }
 
+    // console.log(initialMap);
+
+    // console.log(GetSeedLocationInverted([[ 3071447765, 3790677895, 35519893 ]], 3790677895 + 35519893));
+    // return;
     // INVERTED
     let minium = Infinity;
-    // let initialSeed = 20
-    for (let initialSeed = Number(start); initialSeed <= Number(end); initialSeed++) {
-        let seed = initialSeed;
-        if (initialSeed % 100000 === 0) console.log(initialSeed);
-        // console.log(initialMap.entries())
+    let running = true;
+    let locationSeed = 0;
+    while(running) {
+        let seed = locationSeed;
+        console.log('location seed', locationSeed);
+        if (locationSeed % 1000000 === 0) console.log(locationSeed);
         for (const [key, checks] of initialMap.entries()) {
-            // console.log('checking', key); 
-
-            seed = GetSeedLocationInverted(checks, Number(seed));
-            // console.log(seed); 
+            // console.log('check', key, checks);
+            seed = GetSeedLocationInverted(checks, seed);
         }
+        console.log('seed after', seed);
         for (const [bottom, range] of seeds) {
-            if (seed >= bottom && seed <= bottom + range) {
-                if (initialSeed < minium) minium = initialSeed;
+            if (seed >= bottom && seed < bottom + range) {
+                running = false;
+                minium = locationSeed;
                 break;
             }
         }
-        
-        if (minium < 187579915) console.log('seed', minium)
+        locationSeed++;
     }
-    console.log('SEED', minium);
+
+    console.log(minium);
+    
     // 187579915
+    // 100000000
 
     // const seedLocations = [];
     // for (let [start, range] of seeds) {

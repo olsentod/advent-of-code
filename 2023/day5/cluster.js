@@ -15,7 +15,7 @@ const GetSeedLocation = (checks, value) => {
         const range = Number(rangeString);
 
         const diff = destination - source;
-        if (value >= source && value < source + range) {
+        if (value >= source && value <= source + range) {
             return value + diff;
         }
     }
@@ -139,7 +139,7 @@ const main = async () => {
 
     // Current low 
     // 187579915
-    // 1134543333
+    // 1822141302
 }
 
 main();

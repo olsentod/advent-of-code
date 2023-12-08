@@ -96,8 +96,7 @@ const main = async () => {
 
         seedLocations.push(seed);
     }
-    
-    ;
+
     console.log(seedLocations);
 }
 
