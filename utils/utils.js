@@ -5,7 +5,7 @@ exports.FileToArray = async (filename) => new Promise((res, rej) => {
     let lines = [];
     
     const fileStream = readline.createInterface({
-        input: fs.createReadStream('input.txt')
+        input: fs.createReadStream(filename)
     });
     
     fileStream.on('line', (line) => {
